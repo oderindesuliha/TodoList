@@ -8,4 +8,6 @@ public class TaskRequest {
     private String taskDescription;
     private String taskStatus;
     private String taskPriority;
+    private String userId;
+    private String username;
 }

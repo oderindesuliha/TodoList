@@ -1,0 +1,34 @@
+package org.todolist.validations;
+
+import org.todolist.dtos.requests.UserRegisterRequest;
+import org.todolist.exceptions.UserExceptions;
+
+public class UserValidations {
+    public static void validateUser(UserRegisterRequest request) {
+        if (request == null) {
+            throw new UserExceptions("Registration fields cannot be empty");
+        }
+        validateNames(request.getFirstName(), request.getLastName(), request.getUserName());
+        validateEmail(request.getEmail());
+    }
+
+
+    private static void validateNames(String firstName, String lastName, String userName) {
+        if (firstName == null || firstName.trim().isEmpty() || !firstName.matches("^[A-Za-z\\s-']{2,50}$")) {
+            throw new UserExceptions("First name must contain letters, spaces, or apostrophes (2-50 characters)");
+        }
+        if(lastName == null || lastName.trim().isEmpty() || !lastName.matches("^[A-Za-z\\s-']{2,50}$")) {
+            throw new UserExceptions("Last name must contain letters, spaces, or apostrophes (2-50 characters)");
+        }
+        if(userName.isEmpty()) {
+            throw new UserExceptions("Username cannot be empty");
+        }
+    }
+
+    private static void validateEmail(String email) {
+        if (email == null || email.trim().isEmpty() || !email.matches("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
+            throw new UserExceptions("Enter a valid email address");
+        }
+    }
+   
+}

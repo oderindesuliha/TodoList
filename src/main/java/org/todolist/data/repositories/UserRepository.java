@@ -8,6 +8,6 @@ import org.todolist.data.models.User;
 
 public interface UserRepository extends MongoRepository<User, String> {
     User findByUserName(String userName);
-    User findByEmail(String email);
     boolean existsByEmail(String email);
+    boolean existsByUserName(String userName);
 }

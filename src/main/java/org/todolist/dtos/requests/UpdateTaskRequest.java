@@ -1,13 +1,12 @@
-package org.todolist.dtos.responses;
+package org.todolist.dtos.requests;
 
 import lombok.Data;
 
 @Data
-public class TaskResponse {
-    private String taskId;
+public class UpdateTaskRequest {
+    private String userId;
     private String taskTitle;
     private String taskDescription;
     private String taskStatus;
     private String taskPriority;
-    private String message;
 }
