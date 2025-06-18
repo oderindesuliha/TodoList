@@ -1,22 +1,30 @@
 package org.todolist.services;
 
 
-import org.springframework.stereotype.Service;
-import org.todolist.data.models.Task;
-import org.todolist.data.models.User;
-import org.todolist.dtos.requests.DeleteTaskRequest;
-import org.todolist.dtos.requests.TaskRequest;
-import org.todolist.dtos.requests.UpdateTaskRequest;
+import org.todolist.dtos.UndoneTaskRequest;
+import org.todolist.dtos.requests.*;
 import org.todolist.dtos.responses.TaskResponse;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface TaskService {
 
     TaskResponse createTask(TaskRequest taskRequest);
 
     TaskResponse updateTask(UpdateTaskRequest updateTaskRequest);
+
+    TaskResponse updateRequest(UpdateTaskRequest updateTaskRequest);
+
     String deleteTask(DeleteTaskRequest deleteTaskRequest);
 
 
+    List<TaskResponse> undoneTask(UndoneTaskRequest undoneTaskrequest);
+
+    List<TaskResponse> viewCompletedTasks(String username);
+
+    List<TaskResponse> completedTasks(CompletedTaskRequest completedTaskRequest);
+
+    void markTaskDone(TaskRequest taskRequest);
+
+    void doneTask(DoneTaskRequest doneTaskRequest);
 }

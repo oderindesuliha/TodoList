@@ -9,4 +9,6 @@ public class UpdateTaskRequest {
     private String taskDescription;
     private String taskStatus;
     private String taskPriority;
+    public String taskId;
+
 }

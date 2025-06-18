@@ -17,5 +17,5 @@ public class User {
     private String email;
     private String password;
     private List<String> taskIds;
-
+    private boolean isLoggedIn = false;
 }

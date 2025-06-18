@@ -15,8 +15,8 @@ public class Task {
     private String taskDescription;
     private String taskStatus;
     private String taskPriority;
-    private boolean completed;
-    private LocalDateTime createdAt;
+    private boolean completed = false;
+    private LocalDateTime createdAt = LocalDateTime.now();
     private String userId;
 
 }

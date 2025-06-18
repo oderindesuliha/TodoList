@@ -7,6 +7,7 @@ import org.todolist.data.repositories.UserRepository;
 import org.todolist.dtos.requests.UserLoginRequest;
 import org.todolist.dtos.requests.UserLogoutRequest;
 import org.todolist.dtos.requests.UserRegisterRequest;
+import org.todolist.dtos.responses.TaskResponse;
 import org.todolist.dtos.responses.UserLogoutResponse;
 import org.todolist.dtos.responses.UserLoginResponse;
 import org.todolist.dtos.responses.UserRegisterResponse;
@@ -20,25 +21,25 @@ import java.util.Optional;
 
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
     @Override
     public UserRegisterResponse register(UserRegisterRequest request) {
-            UserValidations.validateUser(request);
-            if (userRepository.existsByEmail(request.getEmail())) {
-                throw new UserExceptions("Email already exists");
-            }
-            if (userRepository.existsByUserName(request.getUserName())){
-                throw new UserExceptions("Username already exists");
-            }
-            User user = UserMapper.mapRegisterRequest(request);
-            user.setTaskIds(new ArrayList<>());
-            User savedUser = userRepository.save(user);
-
-            return UserMapper.mapRegisterResponse(savedUser, "Account created successfully");
+        UserValidations.validateUser(request);
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserExceptions("Email already exists");
         }
+        if (userRepository.existsByUserName(request.getUserName())) {
+            throw new UserExceptions("Username already exists");
+        }
+        User user = UserMapper.mapRegisterRequest(request);
+        user.setTaskIds(new ArrayList<>());
+        User savedUser = userRepository.save(user);
+
+        return UserMapper.mapRegisterResponse(savedUser, "Account created successfully");
+    }
 
     @Override
     public UserLoginResponse login(UserLoginRequest request) {
@@ -63,29 +64,28 @@ public class UserServiceImpl implements UserService{
         return response;
     }
 
-    public UserLogoutResponse logout(UserLogoutRequest request){
-            if (request.getUsername() == null || request.getUsername().isEmpty()) {
-                throw new UserExceptions("Username is required");
-            }
-            if (request.getPassword() == null || request.getPassword().isEmpty()) {
-                throw new UserExceptions("Password is required");
-            }
-
-            User user = userRepository.findByUserName(request.getUsername());
-            if (user == null) {
-                throw new UserExceptions("User not found");
-            }
-
-            if (!Password.checkPassword(request.getPassword(), user.getPassword())) {
-                throw new UserExceptions("Invalid password");
-            }
-
-
-            UserLogoutResponse response = new UserLogoutResponse();
-            response.setMessage("You have successfully logged out");
-            return response;
+    public UserLogoutResponse logout(UserLogoutRequest request) {
+        if (request.getUsername() == null || request.getUsername().isEmpty()) {
+            throw new UserExceptions("Username is required");
+        }
+        if (request.getPassword() == null || request.getPassword().isEmpty()) {
+            throw new UserExceptions("Password is required");
         }
 
+        User user = userRepository.findByUserName(request.getUsername());
+        if (user == null) {
+            throw new UserExceptions("User not found");
+        }
+
+        if (!Password.checkPassword(request.getPassword(), user.getPassword())) {
+            throw new UserExceptions("Invalid password");
+        }
+
+
+        UserLogoutResponse response = new UserLogoutResponse();
+        response.setMessage("You have successfully logged out");
+        return response;
+    }
 }
 
 

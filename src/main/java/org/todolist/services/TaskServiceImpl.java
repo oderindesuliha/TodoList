@@ -7,9 +7,8 @@ import org.todolist.data.models.Task;
 import org.todolist.data.models.User;
 import org.todolist.data.repositories.TaskRepository;
 import org.todolist.data.repositories.UserRepository;
-import org.todolist.dtos.requests.DeleteTaskRequest;
-import org.todolist.dtos.requests.TaskRequest;
-import org.todolist.dtos.requests.UpdateTaskRequest;
+import org.todolist.dtos.UndoneTaskRequest;
+import org.todolist.dtos.requests.*;
 import org.todolist.dtos.responses.TaskResponse;
 import org.todolist.exceptions.TaskExceptions;
 import org.todolist.exceptions.UserExceptions;
@@ -17,6 +16,7 @@ import org.todolist.utils.TaskMapper;
 import org.todolist.validations.TaskValidations;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -87,14 +87,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public String deleteTask(DeleteTaskRequest deleteTaskRequest) {
-        Optional<User> selectedUser = userRepository.findById(deleteContactRequest.getUserId());
+        Optional<User> selectedUser = userRepository.findById(deleteTaskRequest.getUserId());
         if (selectedUser.isEmpty()) {
             throw new TaskExceptions("User not found");
         }
         User user = selectedUser.get();
 
-        System.out.println(deleteTaskRequest.getEmail());
-        Optional<Task> selectedTask = taskRepository.findByPhoneNumber(deleteContactRequest.getPhoneNumber());
+        Optional<Task> selectedTask = taskRepository.findByUsername(((deleteTaskRequest.getUsername());
         if (selectedTask.isEmpty()) {
             throw new TaskExceptions("Task not found");
         }
@@ -106,7 +105,82 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.delete(task);
         return "Task deleted successfully";
     }
+
+@Override
+public List<TaskResponse> undoneTask(UndoneTaskRequest undoneTaskRequest) {
+    boolean selectedUser = userRepository.existsByEmail(undoneTaskRequest.getEmail());
+    if (!selectedUser) {
+        throw new TaskExceptions("User not found");
+    }
+    userService.validateUserLoggedIn(user.get().getUserId());
+    List<Task> tasks = taskRepository.findTasksByUserId((user.get().getUserId());
+    if (tasks.isEmpty()) {
+        throw new TaskExceptions("No unfinished tasks");
+    }
+    List<TaskResponse> responses = new ArrayList<>();
+    for (Task task : tasks) {
+        if (!task.isCompleted()) {
+            responses.add(TaskMapper.mapTaskResponse(task, "Task retrieved"));
+        }
+    }
+    if (responses.isEmpty()) {
+        throw new TaskExceptions("No unfinished tasks");
+    }
+    return responses;
 }
+
+@Override
+public List<TaskResponse> completedTasks(CompletedTaskRequest completedTaskRequest) {
+    Optional<User> user = userRepository.findByUsername(completedTaskRequest.getUsername());
+    if (user.isEmpty()) {
+        throw new UserExceptions("User not found");
+    }
+    userService.validateUserLoggedIn(user.get().getUserId());
+    List<Task> tasks = taskRepository.findTasksByUserId(user.get().getUserId());
+    if (tasks.isEmpty()) {
+        throw new TaskExceptions("No completed tasks");
+    }
+    List<TaskResponse> responses = new ArrayList<>();
+    for (Task task : tasks) {
+        if (task.isCompleted()) {
+            responses.add(TaskMapper.mapTaskResponse(task, "Task retrieved"));
+        }
+    }
+    if (responses.isEmpty()) {
+        throw new TaskExceptions("No completed tasks");
+    }
+    return responses;
+}
+
+@Override
+public void doneTask(DoneTaskRequest doneTaskRequest) {
+    userService.validateUserLoggedIn(doneTaskRequest.getUserId());
+    Optional<User> user = userRepository.findById(doneTaskRequest.getUserId());
+    if (user.isEmpty()) {
+        throw new UserExceptions("User not found");
+    }
+    List<Task> tasks = taskRepository.findTasksByUserId(user.get().getUserId());
+    boolean found = false;
+    for (Task task : tasks) {
+        if (task.getTaskTitle().equals(doneTaskRequest.getTaskTitle())) {
+            found = true;
+            if (task.isCompleted()) {
+                throw new TaskExceptions("Task already marked as done");
+            }
+            task.setCompleted(true);
+            task.setTaskStatus("COMPLETED");
+            taskRepository.save(task);
+            break;
+        }
+    }
+    if (!found) {
+        throw new TaskExceptions("Task not found");
+    }
+}
+
+
+
+
 
 
 
