@@ -17,12 +17,7 @@ public class UserMapper {
 
     public static UserRegisterResponse mapRegisterResponse(User user, String message) {
         UserRegisterResponse response = new UserRegisterResponse();
-        response.setFirstName(user.getFirstName());
-        response.setLastName(user.getLastName());
-        response.setEmail(user.getEmail());
-        response.setUserName(user.getUserName());
         response.setUserId(user.getUserId());
-        response.setTaskIds(user.getTaskIds());
         response.setMessage(message);
         return response;
     }

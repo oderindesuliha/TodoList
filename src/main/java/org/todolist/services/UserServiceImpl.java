@@ -7,7 +7,6 @@ import org.todolist.data.repositories.UserRepository;
 import org.todolist.dtos.requests.UserLoginRequest;
 import org.todolist.dtos.requests.UserLogoutRequest;
 import org.todolist.dtos.requests.UserRegisterRequest;
-import org.todolist.dtos.responses.TaskResponse;
 import org.todolist.dtos.responses.UserLogoutResponse;
 import org.todolist.dtos.responses.UserLoginResponse;
 import org.todolist.dtos.responses.UserRegisterResponse;
@@ -17,8 +16,6 @@ import org.todolist.utils.UserMapper;
 import org.todolist.validations.UserValidations;
 
 import java.util.ArrayList;
-import java.util.Optional;
-
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -55,8 +52,11 @@ public class UserServiceImpl implements UserService {
             throw new UserExceptions("Invalid Username or Password");
         }
 
-        if (!Password.checkPassword(request.getPassword(), user.getPassword()))
+        if (!Password.checkPassword(request.getPassword(), user.getPassword())) {
             throw new UserExceptions("Invalid Username or Password");
+        }
+
+        userRepository.save(user);
 
         UserLoginResponse response = new UserLoginResponse();
         response.setMessage(request.getUserName() + " has successfully logged in");
@@ -81,11 +81,10 @@ public class UserServiceImpl implements UserService {
             throw new UserExceptions("Invalid password");
         }
 
+        userRepository.save(user);
 
         UserLogoutResponse response = new UserLogoutResponse();
         response.setMessage("You have successfully logged out");
         return response;
     }
 }
-
-

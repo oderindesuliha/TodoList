@@ -35,24 +35,4 @@ public class UserValidations {
         }
     }
 
-    public void validateUserLoggedIn(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty() || !user.get().isLoggedIn()) {
-            throw new UserExceptions("User is not logged in");
-        }
-        User user = userRepository.findByUserName(request.getUsername());
-        if (user == null) {
-            throw new UserExceptions("User not found");
-        }
-
-
-        if (!user.isLoggedIn()) {
-            throw new UserExceptions("User is not logged in");
-        }
-
-        if (!Password.checkPassword(request.getPassword(), user.getPassword())) {
-            throw new UserExceptions("Invalid password");
-        }
-    }
-   
 }

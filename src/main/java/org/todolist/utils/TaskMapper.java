@@ -15,13 +15,15 @@ public class TaskMapper {
         return task;
     }
 
-    public static TaskResponse mapTaskResponse(Task task, String message) {
+    public static TaskResponse mapTaskResponse(Task taskRequest) {
         TaskResponse response = new TaskResponse();
-        response.setTaskTitle(response.getTaskTitle());
-        response.setTaskDescription(response.getTaskDescription());
-        response.setTaskPriority(response.getTaskPriority());
-        response.setTaskStatus(response.getTaskStatus());
-        response.setMessage(message);
+        response.setTaskId(taskRequest.getTaskId());
+        response.setTaskTitle(taskRequest.getTaskTitle());
+        response.setTaskDescription(taskRequest.getTaskDescription());
+        response.setTaskPriority(taskRequest.getTaskPriority());
+        response.setTaskStatus(taskRequest.getTaskStatus());
+        response.setMessage("Task saved successfully");
+
         return response;
     }
 }
