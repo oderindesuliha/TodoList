@@ -102,7 +102,7 @@ class TaskRepositoryTest {
         task1.setTaskTitle("A new Task");
         task1.setTaskDescription("A new Task Description");
         task1.setTaskStatus("finished");
-        task1.setTaskPriority(TaskPriority.URGENT.toString());
+        task1.setTaskPriority(TaskPriority.CRITICAL.toString());
         task1.setUserId(user.getUserId());
         taskRepository.save(task1);
 

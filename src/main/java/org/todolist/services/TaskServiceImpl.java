@@ -27,7 +27,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponse createTask(TaskRequest taskRequest) {
-        TaskValidations.validateTask(taskRequest);
+        if (!TaskValidations.validateTask(taskRequest)) {
+            if (taskRequest.getTaskTitle() == null || taskRequest.getTaskTitle().trim().isEmpty() ||
+                    !taskRequest.getTaskTitle().matches("^[A-Za-z\\s-']{2,100}$")) {
+                throw new TaskExceptions("Task title cannot be empty or invalid");
+            }
+            if (taskRequest.getTaskDescription() == null || taskRequest.getTaskDescription().trim().isEmpty() ||
+                    !taskRequest.getTaskDescription().matches("^[A-Za-z\\s-']{2,250}$")) {
+                throw new TaskExceptions("Task Description is required or invalid");
+            }
+        }
+
         try {
             TaskPriority.valueOf(taskRequest.getTaskPriority());
         } catch (IllegalArgumentException e) {
@@ -95,7 +105,6 @@ public class TaskServiceImpl implements TaskService {
 
         return TaskMapper.mapTaskResponse(updated);
     }
-
 
     @Override
     public String deleteTask(DeleteTaskRequest deleteTaskRequest) {

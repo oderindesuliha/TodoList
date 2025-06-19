@@ -4,14 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.todolist.data.models.User;
 import org.todolist.data.repositories.TaskRepository;
 import org.todolist.data.repositories.UserRepository;
 import org.todolist.dtos.requests.*;
 import org.todolist.dtos.responses.TaskResponse;
 import org.todolist.dtos.responses.UserRegisterResponse;
 
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,7 +51,7 @@ class TaskServiceImplTest {
         TaskRequest taskRequest = new TaskRequest();
         taskRequest.setTaskTitle("Test Task");
         taskRequest.setTaskDescription("This is a test task");
-        taskRequest.setTaskPriority("HIGH");
+        taskRequest.setTaskPriority("OPTIONAL");
         taskRequest.setTaskStatus("PENDING");
         taskRequest.setUserId(userResponse.getUserId());
 
@@ -66,7 +64,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void testUpdateTask() {
+    void testToUpdateTask() {
         UserRegisterRequest registerUser = registerUser();
         UserRegisterResponse userResponse = userService.register(registerUser);
         assertNotNull(userResponse);
@@ -84,7 +82,7 @@ class TaskServiceImplTest {
         updateTaskRequest.setUserId(userResponse.getUserId());
         updateTaskRequest.setTaskTitle("my gym day");
         updateTaskRequest.setTaskDescription("i will be at the gym today");
-        updateTaskRequest.setTaskPriority("IMPORTANT");
+        updateTaskRequest.setTaskPriority("CRITICAL");
         updateTaskRequest.setTaskStatus("IN_PROGRESS");
         updateTaskRequest.setTaskId(taskResponse.getTaskId());
 
@@ -93,34 +91,33 @@ class TaskServiceImplTest {
         assertEquals("Task saved successfully", response.getMessage());
         assertEquals("my gym day", response.getTaskTitle());
         assertEquals("i will be at the gym today", response.getTaskDescription());
-        assertEquals("IMPORTANT", response.getTaskPriority());
+        assertEquals("CRITICAL", response.getTaskPriority());
         assertEquals("IN_PROGRESS", response.getTaskStatus());
     }
 
+
     @Test
-    void testUndoneTasks() {
+    void testToDeleteTask() {
         UserRegisterRequest registerUser = registerUser();
         UserRegisterResponse userResponse = userService.register(registerUser);
         assertNotNull(userResponse);
         assertEquals("Account created successfully", userResponse.getMessage());
 
-        TaskRequest taskRequest1 = new TaskRequest();
-        taskRequest1.setUserId(userResponse.getUserId());
-        taskRequest1.setTaskTitle("Task 1");
-        taskRequest1.setTaskDescription("Gym day");
-        taskRequest1.setTaskPriority("IMPORTANT");
-        taskRequest1.setTaskStatus("PENDING");
-        TaskResponse response1 = taskService.createTask(taskRequest1);
-        assertNotNull(response1);
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setUserId(userResponse.getUserId());
+        taskRequest.setTaskTitle("My New Task");
+        taskRequest.setTaskDescription("I will take my bath");
+        taskRequest.setTaskPriority("OPTIONAL");
+        taskRequest.setTaskStatus("PENDING");
+        TaskResponse taskResponse = taskService.createTask(taskRequest);
+        assertNotNull(taskResponse);
 
-        TaskRequest taskRequest2 = new TaskRequest();
-        taskRequest2.setUserId(userResponse.getUserId());
-        taskRequest2.setTaskTitle("Task 2");
-        taskRequest2.setTaskDescription("School day");
-        taskRequest2.setTaskPriority("URGENT");
-        taskRequest2.setTaskStatus("PENDING");
-        TaskResponse response = taskService.createTask(taskRequest2);
-        assertNotNull(response);
+        DeleteTaskRequest deleteTaskRequest = new DeleteTaskRequest();
+        deleteTaskRequest.setUserId(userResponse.getUserId());
+        deleteTaskRequest.setTaskId(taskResponse.getTaskId());
+        String deleteResponse = taskService.deleteTask(deleteTaskRequest);
+        assertEquals("Task deleted successfully", deleteResponse);
+        assertFalse(taskRepository.existsById(taskResponse.getTaskId()), "Task should be deleted from repository");
 
 
     }
