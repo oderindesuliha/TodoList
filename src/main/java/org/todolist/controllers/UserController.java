@@ -14,6 +14,9 @@ import org.todolist.dtos.responses.UserRegisterResponse;
 import org.todolist.exceptions.UserExceptions;
 import org.todolist.services.UserService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -39,11 +42,16 @@ public class UserController {
                 UserLoginResponse response = userService.login(request);
                 return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
             } catch (UserExceptions error) {
-                return new ResponseEntity<>(error.getMessage(), HttpStatus.BAD_REQUEST);
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", error.getMessage());
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
             } catch (Exception error) {
-                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "An unexpected error occurred. Please try again.");
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
             }
         }
+
 
         @PostMapping("/logout")
         public ResponseEntity<?> logout(@RequestBody UserLogoutRequest request) {

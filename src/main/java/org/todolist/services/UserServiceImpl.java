@@ -1,6 +1,8 @@
 package org.todolist.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 import org.todolist.data.models.User;
 import org.todolist.data.repositories.UserRepository;
@@ -17,10 +19,13 @@ import org.todolist.validations.UserValidations;
 
 import java.util.ArrayList;
 
+@Configuration
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+
 
     @Override
     public UserRegisterResponse register(UserRegisterRequest request) {
@@ -33,6 +38,8 @@ public class UserServiceImpl implements UserService {
         }
         User user = UserMapper.mapRegisterRequest(request);
         user.setTaskIds(new ArrayList<>());
+
+//        user.setPassword(passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
 
         return UserMapper.mapRegisterResponse(savedUser, "Account created successfully");
